@@ -1,17 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
-class Role(models.Model):
-    name = models.CharField(max_length=20, unique=True)
+class Task(models.Model):
+    STATUS_CHOICES = [
+        ("in progress", "В прогресе"),
+        ("complete", "Виконано"),
+        ("pause", "Відкладено"),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="in progress")
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
-
-class User(models.Model):
-    name = models.CharField(max_length=20)
-    email = models.EmailField(unique=True)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    group = models.CharField(max_length=100, blank=True, null=True)
-
-    def __str__(self):
-        return f'{self.name}: {self.role.name}'
+        return self.title
